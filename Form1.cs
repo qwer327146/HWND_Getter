@@ -34,8 +34,7 @@ namespace HWND_Getter
                 //关闭句柄获取功能
                 button_Active.Text = "启动";
                 timer1.Stop();
-            }
-            label3.Text = isActive.ToString();
+            }            
         }
 
         /// <summary>
