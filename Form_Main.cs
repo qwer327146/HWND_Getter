@@ -37,23 +37,7 @@ namespace HWND_Getter
                 button_Active.Text = "启动";
                 timer1.Stop();
             }            
-        }
-
-        /// <summary>
-        /// 返回包含了指定点的窗口的句柄。忽略屏蔽、隐藏以及透明窗口
-        /// </summary>
-        /// <param name="Point">指定的鼠标坐标</param>
-        /// <returns>鼠标坐标处的窗口句柄，如果没有，返回</returns>
-        [DllImport("user32.dll")]
-        internal static extern IntPtr WindowFromPoint(Point Point);
-
-        /// <summary>
-        /// 获取鼠标处的坐标
-        /// </summary>
-        /// <param name="lpPoint">随同指针在屏幕像素坐标中的位置载入的一个结构</param>
-        /// <returns>非零表示成功，零表示失败</returns>
-        [DllImport("user32.dll")]
-        internal static extern bool GetCursorPos(out Point lpPoint);
+        }      
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -79,13 +63,42 @@ namespace HWND_Getter
             textBox_Height.Text = (mRect.Bottom - mRect.Top).ToString();
         }
 
+        /// <summary>
+        /// 返回包含了指定点的窗口的句柄。忽略屏蔽、隐藏以及透明窗口
+        /// </summary>
+        /// <param name="Point">指定的鼠标坐标</param>
+        /// <returns>鼠标坐标处的窗口句柄，如果没有，返回</returns>
+        [DllImport("user32.dll")]
+        internal static extern IntPtr WindowFromPoint(Point Point);
+
+        /// <summary>
+        /// 获取鼠标处的坐标
+        /// </summary>
+        /// <param name="lpPoint">随同指针在屏幕像素坐标中的位置载入的一个结构</param>
+        /// <returns>非零表示成功，零表示失败</returns>
+        [DllImport("user32.dll")]
+        internal static extern bool GetCursorPos(out Point lpPoint);
+
+        /// <summary>
+        /// 通过句柄获取进程ID
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="pid"></param>
+        /// <returns></returns>
         [DllImport("user32", EntryPoint = "GetWindowThreadProcessId")]
         private static extern int GetWindowThreadProcessId(IntPtr hwnd, out int pid);
 
+        /// <summary>
+        /// 通过句柄获取窗口尺寸信息
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="lpRect"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
 
+        //按顺序布局排列结构体
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -94,6 +107,8 @@ namespace HWND_Getter
             public int Right;                           //最右坐标
             public int Bottom;                          //最下坐标
         }
+
+        //热键
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.F4)
