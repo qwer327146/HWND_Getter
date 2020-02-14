@@ -14,6 +14,8 @@ namespace HWND_Getter
     public partial class MainForm : Form
     {
         private bool isActive;
+
+       
         public MainForm()
         {
             InitializeComponent();
@@ -59,15 +61,39 @@ namespace HWND_Getter
             int calcID = 0; //进程ID
             int calcTD = 0; //线程ID
             GetCursorPos(out p);//获取鼠标坐标
+            //基础功能
             //this.Text = WindowFromPoint(p).ToString("X");//转换为16进制
             textBox_HWND.Text = WindowFromPoint(p).ToString();//转换为16进制
             calcID =GetWindowThreadProcessId(WindowFromPoint(p),out calcTD);
             textBox_ProcessID.Text = calcTD.ToString();
+
+            //扩展功能
+            RECT mRect = new RECT();
+            GetWindowRect(WindowFromPoint(p), ref mRect);
+            textBox_Left.Text = mRect.Left.ToString();
+            textBox_Top.Text = mRect.Top.ToString();
+            textBox_Right.Text = mRect.Right.ToString();
+            textBox_Bottom.Text = mRect.Bottom.ToString();
+
+            textBox_Width.Text = (mRect.Right - mRect.Left).ToString();
+            textBox_Height.Text = (mRect.Bottom - mRect.Top).ToString();
         }
 
         [DllImport("user32", EntryPoint = "GetWindowThreadProcessId")]
         private static extern int GetWindowThreadProcessId(IntPtr hwnd, out int pid);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;                            //最左坐标
+            public int Top;                             //最上坐标
+            public int Right;                           //最右坐标
+            public int Bottom;                          //最下坐标
+        }
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.F4)
